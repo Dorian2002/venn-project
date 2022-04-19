@@ -9,12 +9,13 @@ import {
 } from "react-native";
 
 import app from "../../app.json";
-import data from "../../assets/data.json";
 import ColorContext from "../ColorContext";
 import Button from "../components/Button";
 import Greetings from "../components/Greetings";
+import useGetAll from "../hooks/useGetAll";
 
 function Identification({ navigation }) {
+  const { data } = useGetAll("members");
   const [, setColor] = useContext(ColorContext);
   const [value, setValue] = useState("");
   const [member, setMember] = useState(null);
@@ -29,8 +30,8 @@ function Identification({ navigation }) {
     setValue(text);
   };
   const onPress = () => {
-    if (value.length > 0) {
-      const found = data.members.find(({ lastname, firstname }) =>
+    if (value.length > 0 && data?.length > 0) {
+      const found = data.find(({ lastname, firstname }) =>
         value.match(
           new RegExp(
             `(${firstname} ${lastname})|(${lastname} ${firstname})`,
