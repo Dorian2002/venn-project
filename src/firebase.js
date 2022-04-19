@@ -9,9 +9,9 @@ import {
 } from "firebase/firestore";
 
 const config = {
-  apiKey: process.env.FIREBASE_API_KEY,
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  appId: process.env.FIREBASE_APP_ID,
+  apiKey: "AIzaSyB5ze3VAgqWpK-IsjRiBuwrdznTi0Q4-xM",
+  projectId: "vennproject-8b9d9",
+  appId: "1:275780316595:android:0a827202aa0fc5320c6fc6",
 };
 
 export const app = getApps().length === 0 ? initializeApp(config) : getApp();
