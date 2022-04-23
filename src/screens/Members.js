@@ -1,11 +1,26 @@
+import { useState, useEffect } from "react";
 import { View, ScrollView, StyleSheet, Text } from "react-native";
-import React, { useState, useEffect } from "react";
 
-import data from "../../assets/data.json";
 import Avatar from "../components/Avatar";
 import Button from "../components/Button";
+import useGetAll from "../hooks/useGetAll";
 
 function Members() {
+  const { loading, error, data } = useGetAll("members");
+  if (loading) {
+    return (
+      <View style={styles.root}>
+        <Text>Chargement...</Text>
+      </View>
+    );
+  }
+  if (error || !data?.length > 0) {
+    return (
+      <View style={styles.root}>
+        <Text>Pas de membre.</Text>
+      </View>
+    );
+  }
   return (
     <View>
       <View style={styles.header}>
@@ -13,11 +28,8 @@ function Members() {
         <Button style={styles.headerCpmnt} title="Rechercher" />
       </View>
       <ScrollView contentContainerStyle={styles.list}>
-        {data.members.map((member) => (
-          <View
-            style={styles.avatar}
-            key={`${member.firstname}${member.lastname}`}
-          >
+        {data.map((member) => (
+          <View style={styles.avatar} key={member.id}>
             <Avatar
               label={member.firstname[0].toLocaleUpperCase()}
               color={member.favoriteColor}

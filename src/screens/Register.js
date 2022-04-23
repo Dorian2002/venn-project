@@ -8,19 +8,21 @@ import {
   View,
 } from "react-native";
 
+import createNewUserId from "../hooks/createNewUserId";
+import { HexColorPicker } from "react-colorful";
 import * as Location from "expo-location";
 import app from "../../app.json";
 import ColorContext from "../ColorContext";
 import Button from "../components/Button";
 import Greetings from "../components/Greetings";
-import useGetAll from "../hooks/useGetAll";
-import { UpdateLocation } from "../firebase";
+import { RegisterUser } from "../firebase";
 import { GeoPoint } from "firebase/firestore";
 
-function Identification({ navigation }) {
-  const { data } = useGetAll("members");
+function Register({ navigation }) {
   const [, setColor] = useContext(ColorContext);
-  const [value, setValue] = useState("");
+  const [firstname, setFname] = useState("");
+  const [lastname, setLname] = useState("");
+  const [favoritecolor, setFcolor] = useState("");
   const [member, setMember] = useState(null);
   const [error, setError] = useState(false);
 
@@ -43,64 +45,30 @@ function Identification({ navigation }) {
     error,
     member: Boolean(member),
   });
-
-  //useEffect(() => {è
-  //  (async () => {
-  //    let { status } = await Location.requestForegroundPermissionsAsync();
-  //    if (status !== "granted") {
-  //      return;
-  //    }
-  //    let location = await Location.getCurrentPositionAsync({});
-  //    setLocation(location);
-  //  })();
-  //}, []);
-
-  //useEffect(() => {
-  //  if (member && !timeoutId) {
-  //    const id = setTimeout(() => {
-  //      NavigationContainer.navigator("Identification");
-  //    }, 2000);
-  //    setTimeoutId(id);
-  //    return () => {
-  //      clearTimeout(id);
-  //    };
-  //  }
-  //}, [member, timeoutId]);
-
-  let coords = JSON.stringify(location);
-
-  const onChange = (text) => {
+  const onChangeLname = (text) => {
     setError(false);
     setMember(null);
-    setValue(text);
+    setLname(text);
   };
-
-  const onPress = () => {
-    if (value.length > 0 && data?.length > 0) {
-      const found = data.find(({ lastname, firstname }) =>
-        value.match(
-          new RegExp(
-            `(${firstname} ${lastname})|(${lastname} ${firstname})`,
-            "i"
-          )
-        )
-      );
-      setMember(found);
-      setError(!found);
-      if (found) {
-        setColor(found.favoriteColor);
-      }
-    }
-  };
-  const onNavigateToRegister = () => {
-    navigation.navigate("S'enregistrer");
+  const onChangeFname = (text) => {
+    setError(false);
+    setMember(null);
+    setFname(text);
   };
   const onNavigateToHome = () => {
-    UpdateLocation(
-      member.id,
-      new GeoPoint(location.coords.latitude, location.coords.longitude)
-    );
     navigation.navigate("Accueil");
+  };
+  const onPress = () => {
+    RegisterUser(
+      createNewUserId(firstname, lastname),
+      firstname,
+      lastname,
+      favoritecolor,
+      new GeoPoint(location.coords.latitude, location.coords.longitude)
+    ).then((newMember) => {
+      setMember(newMember);
+      setColor(newMember.favoriteColor);
+    });
   };
   const header = (
     <View style={styles.header}>
@@ -108,10 +76,7 @@ function Identification({ navigation }) {
       <Image source={require("../../assets/icon.png")} style={styles.logo} />
     </View>
   );
-
   if (member) {
-    SetMembersCoords(coords, member.firstname, member.lastname);
-    let text;
     return (
       <View style={styles.root}>
         {header}
@@ -124,44 +89,32 @@ function Identification({ navigation }) {
       </View>
     );
   }
-  if (error) {
-    onNavigateToRegister();
-  }
   return (
     <View style={styles.root}>
       {header}
       <View style={styles.content}>
         <TextInput
-          placeholder="Identifiant"
+          placeholder="Nom"
           style={styles.input}
-          value={value}
-          onChangeText={onChange}
+          lastname={lastname}
+          onChangeText={onChangeLname}
         />
+        <TextInput
+          placeholder="Prénom"
+          style={styles.input}
+          firstname={firstname}
+          onChangeText={onChangeFname}
+        />
+        <HexColorPicker favoritecolor={favoritecolor} onChange={setFcolor} />;
         <View style={styles.actions}>
-          <Button title="S'identifier" onPress={onPress} />
+          <Button title="S'enregistrer" onPress={onPress} />
         </View>
       </View>
     </View>
   );
-
-  function SetMembersCoords(coords, _Firstname, _Lastname) {
-    for (let memberData in data.members) {
-      // eslint-disable-next-line prettier/prettier
-      if (
-        memberData.lastname == _Lastname &&
-        memberData.firstname == _Firstname
-      ) {
-        memberData.coords = [
-          JSON.stringify(location.coords.longitude),
-          JSON.stringify(location.coords.latitude),
-          JSON.stringify(location.timestamp),
-        ];
-      }
-    }
-  }
 }
 
-export default Identification;
+export default Register;
 
 const createStyles = ({ error, member }) =>
   StyleSheet.create({
