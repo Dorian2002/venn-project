@@ -4,8 +4,6 @@ import Header from "../components/Header";
 import Button from "../components/Button";
 import useGetAll from "../hooks/useGetAll";
 import Project from "./Project";
-import { useEffect } from "react/cjs/react.production.min";
-import { useIsFocused } from "@react-navigation/native";
 
 function Projects({ navigation }) {
   const { loading, error, data, getData } = useGetAll("projects");
@@ -15,6 +13,7 @@ function Projects({ navigation }) {
   });
 
   const onNavigateToCreateProject = () => {
+    console.log(navigation);
     navigation.navigate("CréationDeProjet");
   };
 
@@ -37,18 +36,22 @@ function Projects({ navigation }) {
     );
   }
 
-  const renderItem = ({ item }) => <Project {...item} />;
+  const renderItem = ({ item }) => (
+    <Project {...item} navigation={navigation} />
+  );
   return (
     <>
       <View style={styles.root}>
         <Header />
       </View>
       <ScrollView style={styles.root}>
-        <FlatList
-          data={data}
-          renderItem={renderItem}
-          keyExtractor={(project) => project.id}
-        />
+        <View>
+          <FlatList
+            data={data}
+            renderItem={renderItem}
+            keyExtractor={(project) => project.id}
+          />
+        </View>
       </ScrollView>
       <View style={styles.root}>
         <Button title="Créer un projet" onPress={onNavigateToCreateProject} />

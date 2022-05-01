@@ -14,9 +14,6 @@ const Tab = createBottomTabNavigator();
 function Home({ route }) {
   const [color] = useContext(ColorContext);
   global.loggedMember = route.params;
-  console.log(
-    "faut faire : \n - verification des participants de projets \n - page modif de projet \n - recherche des membres par leur nom/prénom \n - actualisation des projets"
-  );
 
   return (
     <Tab.Navigator

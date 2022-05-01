@@ -46,14 +46,19 @@ function Register({ navigation }) {
     member: Boolean(member),
   });
   const onChangeLname = (text) => {
+    setErrorMsg("");
     setError(false);
     setMember(null);
     setLname(text);
   };
   const onChangeFname = (text) => {
+    setErrorMsg("");
     setError(false);
     setMember(null);
     setFname(text);
+  };
+  const onNavigateToconnect = () => {
+    navigation.navigate("Identification");
   };
   const onNavigateToHome = () => {
     navigation.navigate("Accueil", {
@@ -61,16 +66,22 @@ function Register({ navigation }) {
     });
   };
   const onPress = () => {
-    RegisterUser(
-      createNewUserId(firstname, lastname),
-      firstname,
-      lastname,
-      favoritecolor,
-      new GeoPoint(location.coords.latitude, location.coords.longitude)
-    ).then((newMember) => {
-      setMember(newMember);
-      setColor(newMember.favoriteColor);
-    });
+    if (lastname === "") {
+      setErrorMsg("Votre nom ne peut pas être vide.");
+    } else if (firstname === "") {
+      setErrorMsg("Votre prénom ne peut pas être vide.");
+    } else {
+      RegisterUser(
+        createNewUserId(firstname, lastname),
+        firstname,
+        lastname,
+        favoritecolor,
+        new GeoPoint(location.coords.latitude, location.coords.longitude)
+      ).then((newMember) => {
+        setMember(newMember);
+        setColor(newMember.favoriteColor);
+      });
+    }
   };
   const header = (
     <View style={styles.header}>
@@ -107,9 +118,13 @@ function Register({ navigation }) {
           firstname={firstname}
           onChangeText={onChangeFname}
         />
-        <HexColorPicker favoritecolor={favoritecolor} onChange={setFcolor} />;
+        <Text style={styles.error}>{errorMsg ? errorMsg : null}</Text>
+        <HexColorPicker favoritecolor={favoritecolor} onChange={setFcolor} />
         <View style={styles.actions}>
           <Button title="S'enregistrer" onPress={onPress} />
+        </View>
+        <View style={styles.actionsRetour}>
+          <Button title="S'identifier" onPress={onNavigateToconnect} />
         </View>
       </View>
     </View>
@@ -159,5 +174,12 @@ const createStyles = ({ error, member }) =>
     },
     actions: {
       marginVertical: 16,
+    },
+    actionsRetour: {
+      marginVertical: 16,
+      justifyContent: "flex-start",
+      display: "flex",
+      flexDirection: "row",
+      padding: 8,
     },
   });

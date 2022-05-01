@@ -1,12 +1,34 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import Button from "../components/Button";
 import { View, Text, StyleSheet } from "react-native";
 
 import Avatar from "../components/Avatar";
 import Tag from "../components/Tag";
 import useGetAll from "../hooks/useGetAll";
+import { useNavigation } from "@react-navigation/native";
 
-function Project({ projectId, tags, participants }) {
+function Project({ route, projectId, tags, participants }) {
   const { data } = useGetAll("members");
+  const [thisProjectId, setProjectId] = useState(null);
+  const [thisTags, setTags] = useState(null);
+  const [thisParticipants, setParticipants] = useState(null);
+  const navigation = useNavigation();
+
+  if (route != null) {
+    setProjectId(route.params.projectId);
+    console.log(thisProjectId);
+    console.log(projectId);
+    setTags(route.params.tags);
+    setParticipants(route.params.participants);
+  }
+
+  const onNavigateToProject = () => {
+    navigation.navigate("AfficherUnProjet", {
+      projectId: projectId,
+      tags: tags,
+      participants: participants,
+    });
+  };
   const avatars = useMemo(
     () =>
       participants
@@ -41,6 +63,7 @@ function Project({ projectId, tags, participants }) {
           </View>
         ))}
       </View>
+      <Button title="Détails" onPress={onNavigateToProject} />
     </View>
   );
 }

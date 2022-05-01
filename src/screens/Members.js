@@ -30,6 +30,10 @@ function Members() {
     setDistance(d);
   };
 
+  const isMemberWithName = (member) => {
+    member.id.match(new RegExp(`(${value})`, "i"));
+  };
+
   if (loading) {
     return (
       <View style={styles.root}>
@@ -70,12 +74,23 @@ function Members() {
       <ScrollView contentContainerStyle={styles.list}>
         {data.map((member) =>
           isMemberWithinDistance(global.loggedMember, member, distance) ? (
-            <View style={styles.avatar} key={member.id}>
-              <Avatar
-                label={member.firstname[0].toLocaleUpperCase()}
-                color={member.favoriteColor}
-              />
-            </View>
+            value !== "" || value !== null ? (
+              isMemberWithName(member) ? (
+                <View style={styles.avatar} key={member.id}>
+                  <Avatar
+                    label={member.firstname[0].toLocaleUpperCase()}
+                    color={member.favoriteColor}
+                  />
+                </View>
+              ) : null
+            ) : (
+              <View style={styles.avatar} key={member.id}>
+                <Avatar
+                  label={member.firstname[0].toLocaleUpperCase()}
+                  color={member.favoriteColor}
+                />
+              </View>
+            )
           ) : null
         )}
         <View style={styles.footer}>

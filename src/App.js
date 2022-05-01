@@ -8,6 +8,7 @@ import Home from "./screens/Home";
 import CreateProject from "./screens/CreateProject";
 import Register from "./screens/Register";
 import ColorContext from "./ColorContext";
+import Project from "./screens/Project";
 
 const Stack = createNativeStackNavigator();
 
@@ -21,6 +22,7 @@ export default function App() {
           <Stack.Screen name="Accueil" component={Home} />
           <Stack.Screen name="S'enregistrer" component={Register} />
           <Stack.Screen name="CréationDeProjet" component={CreateProject} />
+          <Stack.Screen name="AfficherUnProjet" component={Project} />
         </Stack.Navigator>
       </NavigationContainer>
     </ColorContext.Provider>
