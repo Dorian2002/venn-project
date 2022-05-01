@@ -138,6 +138,9 @@ function Identification({ navigation }) {
         <View style={styles.actions}>
           <Button title="S'identifier" onPress={onPress} />
         </View>
+        <View style={styles.actionsRetour}>
+          <Button title="S'enregistrer" onPress={onNavigateToRegister} />
+        </View>
       </View>
     </View>
   );
@@ -186,5 +189,12 @@ const createStyles = ({ error, member }) =>
     },
     actions: {
       marginVertical: 16,
+    },
+    actionsRetour: {
+      marginVertical: 16,
+      justifyContent: "flex-start",
+      display: "flex",
+      flexDirection: "row",
+      padding: 8,
     },
   });
