@@ -26,7 +26,6 @@ function parseDocument(document) {
 
 export async function getAll(name) {
   const snapshot = await getDocs(query(collection(db, name)));
-  console.log();
   return snapshot.docs.map(parseDocument);
 }
 
@@ -50,6 +49,7 @@ export async function RegisterUser(
   _location
 ) {
   const newMember = {
+    id: _memberId,
     favoriteColor: _favoritecolor,
     firstname: _firstname,
     lastname: _lastname,
@@ -57,4 +57,13 @@ export async function RegisterUser(
   };
   await setDoc(doc(db, "members", _memberId), Object.assign({}, newMember));
   return newMember;
+}
+
+export async function CreateNewProject(_projectId, _tags, _participants) {
+  const newProject = {
+    projectId: _projectId,
+    tags: _tags,
+    participants: _participants,
+  };
+  await setDoc(doc(db, "projects", _projectId), Object.assign({}, newProject));
 }

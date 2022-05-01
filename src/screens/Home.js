@@ -7,10 +7,17 @@ import Members from "./Members";
 import ColorContext from "../ColorContext";
 import Projects from "./Projects";
 
+global.loggedMember;
+
 const Tab = createBottomTabNavigator();
 
-function Home() {
+function Home({ route }) {
   const [color] = useContext(ColorContext);
+  global.loggedMember = route.params;
+  console.log(
+    "faut faire : \n - verification des participants de projets \n - page modif de projet \n - recherche des membres par leur nom/prénom \n - actualisation des projets"
+  );
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -58,6 +65,16 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     height: 72,
+  },
+  logo: {
+    height: 32,
+    width: 32,
+    marginLeft: 0,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
   },
 });
 

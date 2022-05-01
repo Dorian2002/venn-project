@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 
-import createNewUserId from "../hooks/createNewUserId";
+import createNewUserId from "../scripts/createNewUserId";
 import { HexColorPicker } from "react-colorful";
 import * as Location from "expo-location";
 import app from "../../app.json";
@@ -56,7 +56,9 @@ function Register({ navigation }) {
     setFname(text);
   };
   const onNavigateToHome = () => {
-    navigation.navigate("Accueil");
+    navigation.navigate("Accueil", {
+      member: member,
+    });
   };
   const onPress = () => {
     RegisterUser(

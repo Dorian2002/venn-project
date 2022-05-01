@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import Identification from "./screens/Identification";
 import Home from "./screens/Home";
+import CreateProject from "./screens/CreateProject";
 import Register from "./screens/Register";
 import ColorContext from "./ColorContext";
 
@@ -19,6 +20,7 @@ export default function App() {
           <Stack.Screen name="Identification" component={Identification} />
           <Stack.Screen name="Accueil" component={Home} />
           <Stack.Screen name="S'enregistrer" component={Register} />
+          <Stack.Screen name="CréationDeProjet" component={CreateProject} />
         </Stack.Navigator>
       </NavigationContainer>
     </ColorContext.Provider>

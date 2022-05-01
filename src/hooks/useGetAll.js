@@ -19,5 +19,5 @@ export default function useGetAll(collection) {
   useEffect(() => {
     getData();
   }, [getData]);
-  return { loading, data, error };
+  return { loading, data, error, getData };
 }

@@ -2,16 +2,16 @@ import { useMemo } from "react";
 import { View, Text, StyleSheet } from "react-native";
 
 import Avatar from "../components/Avatar";
+import Tag from "../components/Tag";
 import useGetAll from "../hooks/useGetAll";
 
-function Project({ title, participants }) {
+function Project({ projectId, tags, participants }) {
   const { data } = useGetAll("members");
   const avatars = useMemo(
     () =>
       participants
         .map((id) => {
           const participant = data?.find((member) => member.id === id);
-          console.log(data, id, participant);
           if (participant) {
             return {
               id,
@@ -26,7 +26,14 @@ function Project({ title, participants }) {
   );
   return (
     <View style={styles.root}>
-      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.title}>{projectId}</Text>
+      <View style={styles.tags}>
+        {tags.map((tag) => (
+          <View key={tag} style={styles.tag}>
+            <Tag label={tag} />
+          </View>
+        ))}
+      </View>
       <View style={styles.avatars}>
         {avatars.map((avatar) => (
           <View key={avatar.id} style={styles.avatar}>
@@ -42,10 +49,18 @@ const styles = StyleSheet.create({
   root: {
     borderColor: "black",
     borderWidth: 4,
+    borderRadius: 5,
     borderStyle: "solid",
     backgroundColor: "rgba(0,0,0,0.1)",
     padding: 8,
     marginVertical: 8,
+  },
+  tag: {
+    margin: 8,
+  },
+  tags: {
+    flexWrap: "wrap",
+    flexDirection: "row",
   },
   title: {
     fontSize: 20,

@@ -67,8 +67,6 @@ function Identification({ navigation }) {
   //  }
   //}, [member, timeoutId]);
 
-  let coords = JSON.stringify(location);
-
   const onChange = (text) => {
     setError(false);
     setMember(null);
@@ -100,7 +98,9 @@ function Identification({ navigation }) {
       member.id,
       new GeoPoint(location.coords.latitude, location.coords.longitude)
     );
-    navigation.navigate("Accueil");
+    navigation.navigate("Accueil", {
+      member: member,
+    });
   };
   const header = (
     <View style={styles.header}>
@@ -110,8 +110,6 @@ function Identification({ navigation }) {
   );
 
   if (member) {
-    SetMembersCoords(coords, member.firstname, member.lastname);
-    let text;
     return (
       <View style={styles.root}>
         {header}
@@ -143,22 +141,6 @@ function Identification({ navigation }) {
       </View>
     </View>
   );
-
-  function SetMembersCoords(coords, _Firstname, _Lastname) {
-    for (let memberData in data.members) {
-      // eslint-disable-next-line prettier/prettier
-      if (
-        memberData.lastname == _Lastname &&
-        memberData.firstname == _Firstname
-      ) {
-        memberData.coords = [
-          JSON.stringify(location.coords.longitude),
-          JSON.stringify(location.coords.latitude),
-          JSON.stringify(location.timestamp),
-        ];
-      }
-    }
-  }
 }
 
 export default Identification;
