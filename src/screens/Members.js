@@ -20,6 +20,11 @@ function Members() {
   const [errorMsg, setError] = useState(false);
   const [distance, setDistance] = useState();
 
+  //distance par défaut
+  if (distance === null) {
+    setDistance(10);
+  }
+
   const onChange = (text) => {
     setError(false);
     setValue(text);
@@ -74,23 +79,12 @@ function Members() {
       <ScrollView contentContainerStyle={styles.list}>
         {data.map((member) =>
           isMemberWithinDistance(global.loggedMember, member, distance) ? (
-            value !== "" || value !== null ? (
-              isMemberWithName(member) ? (
-                <View style={styles.avatar} key={member.id}>
-                  <Avatar
-                    label={member.firstname[0].toLocaleUpperCase()}
-                    color={member.favoriteColor}
-                  />
-                </View>
-              ) : null
-            ) : (
-              <View style={styles.avatar} key={member.id}>
-                <Avatar
-                  label={member.firstname[0].toLocaleUpperCase()}
-                  color={member.favoriteColor}
-                />
-              </View>
-            )
+            <View style={styles.avatar} key={member.id}>
+              <Avatar
+                label={member.firstname[0].toLocaleUpperCase()}
+                color={member.favoriteColor}
+              />
+            </View>
           ) : null
         )}
         <View style={styles.footer}>

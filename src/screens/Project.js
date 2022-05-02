@@ -1,34 +1,61 @@
 import { useMemo, useState } from "react";
 import Button from "../components/Button";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TextInput, Dimensions } from "react-native";
+import { Route } from "react-dom";
 
+import { UpdateProjectLinks } from "../firebase";
 import Avatar from "../components/Avatar";
 import Tag from "../components/Tag";
 import useGetAll from "../hooks/useGetAll";
 import { useNavigation } from "@react-navigation/native";
 
-function Project({ route, projectId, tags, participants }) {
+function Project({ route, projectId, tags, participants, links }) {
   const { data } = useGetAll("members");
-  const [thisProjectId, setProjectId] = useState(null);
-  const [thisTags, setTags] = useState(null);
-  const [thisParticipants, setParticipants] = useState(null);
   const navigation = useNavigation();
+  const [title, setTitle] = useState("");
+  const [link, setLink] = useState("");
+  //const [projectLinks, setProjectLinks] = useState(null);
+
+  //navigation.addListener("focus", () => {
+  //  getData();
+  //});
 
   if (route != null) {
-    setProjectId(route.params.projectId);
-    console.log(thisProjectId);
-    console.log(projectId);
-    setTags(route.params.tags);
-    setParticipants(route.params.participants);
+    projectId = route.params.projectId;
+    tags = route.params.tags;
+    participants = route.params.participants;
+    links = route.params.links;
   }
+
+  const onChangeTitle = (_title) => {
+    setTitle(_title);
+  };
+
+  const onChangeLink = (_link) => {
+    setLink(_link);
+  };
+
+  const onNavigateToHome = () => {
+    links = null;
+    navigation.navigate("Accueil", {
+      member: global.loggedMember.member,
+    });
+  };
+
+  const addLink = () => {
+    UpdateProjectLinks(projectId, title, link, links);
+    onNavigateToProject();
+  };
 
   const onNavigateToProject = () => {
     navigation.navigate("AfficherUnProjet", {
       projectId: projectId,
       tags: tags,
       participants: participants,
+      links: links,
     });
   };
+
   const avatars = useMemo(
     () =>
       participants
@@ -63,7 +90,38 @@ function Project({ route, projectId, tags, participants }) {
           </View>
         ))}
       </View>
-      <Button title="Détails" onPress={onNavigateToProject} />
+      {route
+        ? links.map((lnk) => (
+            <View style={styles.root}>
+              <Text style={styles.title}>{lnk.title}</Text>
+              <Text style={styles.title} href={lnk.link}>
+                {lnk.link}
+              </Text>
+            </View>
+          ))
+        : null}
+      {route ? (
+        <View>
+          <TextInput
+            placeholder="Titre"
+            style={styles.input}
+            onChangeText={onChangeTitle}
+          />
+          <TextInput
+            placeholder="Lien"
+            style={styles.input}
+            onChangeText={onChangeLink}
+          />
+          <View style={styles.inputButton}>
+            <Button title="Créer un nouveau lien" onPress={addLink} />
+          </View>
+        </View>
+      ) : null}
+      {route ? (
+        <Button title="Retour" onPress={onNavigateToHome} />
+      ) : (
+        <Button title="Détails" onPress={onNavigateToProject} />
+      )}
     </View>
   );
 }
@@ -76,6 +134,17 @@ const styles = StyleSheet.create({
     borderStyle: "solid",
     backgroundColor: "rgba(0,0,0,0.1)",
     padding: 8,
+    marginVertical: 8,
+  },
+  input: {
+    borderColor: "black",
+    borderWidth: 4,
+    borderStyle: "solid",
+    backgroundColor: "rgba(0,0,0,0.1)",
+    padding: 8,
+    width: Dimensions.get("window").width - 200,
+    fontSize: 20,
+    fontWeight: "700",
     marginVertical: 8,
   },
   tag: {

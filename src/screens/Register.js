@@ -24,7 +24,8 @@ function Register({ navigation }) {
   const [lastname, setLname] = useState("");
   const [favoritecolor, setFcolor] = useState("");
   const [member, setMember] = useState(null);
-  const [error, setError] = useState(false);
+  const [errorN, setErrorN] = useState(false);
+  const [errorP, setErrorP] = useState(false);
 
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -42,18 +43,21 @@ function Register({ navigation }) {
   }, []);
 
   const styles = createStyles({
-    error,
+    errorN,
+    errorP,
     member: Boolean(member),
   });
   const onChangeLname = (text) => {
     setErrorMsg("");
-    setError(false);
+    setErrorN(false);
+    setErrorP(false);
     setMember(null);
     setLname(text);
   };
   const onChangeFname = (text) => {
     setErrorMsg("");
-    setError(false);
+    setErrorP(false);
+    setErrorN(false);
     setMember(null);
     setFname(text);
   };
@@ -67,8 +71,10 @@ function Register({ navigation }) {
   };
   const onPress = () => {
     if (lastname === "") {
+      setErrorN(true);
       setErrorMsg("Votre nom ne peut pas être vide.");
     } else if (firstname === "") {
+      setErrorP(true);
       setErrorMsg("Votre prénom ne peut pas être vide.");
     } else {
       RegisterUser(
@@ -108,13 +114,13 @@ function Register({ navigation }) {
       <View style={styles.content}>
         <TextInput
           placeholder="Nom"
-          style={styles.input}
+          style={styles.inputN}
           lastname={lastname}
           onChangeText={onChangeLname}
         />
         <TextInput
           placeholder="Prénom"
-          style={styles.input}
+          style={styles.inputP}
           firstname={firstname}
           onChangeText={onChangeFname}
         />
@@ -133,7 +139,7 @@ function Register({ navigation }) {
 
 export default Register;
 
-const createStyles = ({ error, member }) =>
+const createStyles = ({ error, errorP, errorN, member }) =>
   StyleSheet.create({
     root: {
       flex: 1,
@@ -158,8 +164,19 @@ const createStyles = ({ error, member }) =>
       width: error || member ? 32 : 192,
       marginLeft: error || member ? 8 : 0,
     },
-    input: {
-      borderColor: error ? "red" : "black",
+    inputN: {
+      borderColor: errorN ? "red" : "black",
+      borderWidth: 4,
+      borderStyle: "solid",
+      backgroundColor: "rgba(0,0,0,0.1)",
+      padding: 8,
+      width: Dimensions.get("window").width - 64,
+      fontSize: 20,
+      fontWeight: "700",
+      marginVertical: 8,
+    },
+    inputP: {
+      borderColor: errorP ? "red" : "black",
       borderWidth: 4,
       borderStyle: "solid",
       backgroundColor: "rgba(0,0,0,0.1)",

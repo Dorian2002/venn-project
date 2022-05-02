@@ -9,6 +9,7 @@ import {
   updateDoc,
   setDoc,
 } from "firebase/firestore";
+import { Component } from "react/cjs/react.production.min";
 
 const config = {
   apiKey: "AIzaSyB5ze3VAgqWpK-IsjRiBuwrdznTi0Q4-xM",
@@ -64,6 +65,15 @@ export async function CreateNewProject(_projectId, _tags, _participants) {
     projectId: _projectId,
     tags: _tags,
     participants: _participants,
+    links: [],
   };
   await setDoc(doc(db, "projects", _projectId), Object.assign({}, newProject));
+}
+
+export async function UpdateProjectLinks(projectId, newTitle, newLink, links) {
+  let component = { title: newTitle, link: newLink };
+  links.push(component);
+  await updateDoc(doc(db, "projects", projectId), {
+    links: links,
+  });
 }

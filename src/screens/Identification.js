@@ -22,7 +22,7 @@ function Identification({ navigation }) {
   const [, setColor] = useContext(ColorContext);
   const [value, setValue] = useState("");
   const [member, setMember] = useState(null);
-  const [error, setError] = useState(false);
+  const [errorMsgLogin, setErrorMsgL] = useState("");
 
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -40,35 +40,12 @@ function Identification({ navigation }) {
   }, []);
 
   const styles = createStyles({
-    error,
+    errorMsgLogin,
     member: Boolean(member),
   });
 
-  //useEffect(() => {è
-  //  (async () => {
-  //    let { status } = await Location.requestForegroundPermissionsAsync();
-  //    if (status !== "granted") {
-  //      return;
-  //    }
-  //    let location = await Location.getCurrentPositionAsync({});
-  //    setLocation(location);
-  //  })();
-  //}, []);
-
-  //useEffect(() => {
-  //  if (member && !timeoutId) {
-  //    const id = setTimeout(() => {
-  //      NavigationContainer.navigator("Identification");
-  //    }, 2000);
-  //    setTimeoutId(id);
-  //    return () => {
-  //      clearTimeout(id);
-  //    };
-  //  }
-  //}, [member, timeoutId]);
-
   const onChange = (text) => {
-    setError(false);
+    setErrorMsgL("");
     setMember(null);
     setValue(text);
   };
@@ -84,9 +61,10 @@ function Identification({ navigation }) {
         )
       );
       setMember(found);
-      setError(!found);
       if (found) {
         setColor(found.favoriteColor);
+      } else {
+        setErrorMsgL("Aucuns utilisateur n'as été trouvé.");
       }
     }
   };
@@ -122,9 +100,6 @@ function Identification({ navigation }) {
       </View>
     );
   }
-  if (error) {
-    onNavigateToRegister();
-  }
   return (
     <View style={styles.root}>
       {header}
@@ -135,6 +110,7 @@ function Identification({ navigation }) {
           value={value}
           onChangeText={onChange}
         />
+        <Text style={styles.error}>{errorMsgLogin ? errorMsgLogin : null}</Text>
         <View style={styles.actions}>
           <Button title="S'identifier" onPress={onPress} />
         </View>
@@ -148,33 +124,32 @@ function Identification({ navigation }) {
 
 export default Identification;
 
-const createStyles = ({ error, member }) =>
+const createStyles = ({ errorMsgLogin, member }) =>
   StyleSheet.create({
     root: {
       flex: 1,
       justifyContent: "center",
     },
     header: {
-      flexDirection: error || member ? "row" : "column",
+      flexDirection: "column",
       alignItems: "center",
       justifyContent: "flex-end",
     },
     content: {
-      flexGrow: error || member ? 1 : 0,
+      flexGrow: 0,
       alignItems: "center",
       justifyContent: "center",
     },
     title: {
-      fontSize: error || member ? 12 : 32,
+      fontSize: 32,
       fontWeight: "700",
     },
     logo: {
-      height: error || member ? 32 : 192,
-      width: error || member ? 32 : 192,
-      marginLeft: error || member ? 8 : 0,
+      height: 192,
+      width: 192,
     },
     input: {
-      borderColor: error ? "red" : "black",
+      borderColor: errorMsgLogin ? "red" : "black",
       borderWidth: 4,
       borderStyle: "solid",
       backgroundColor: "rgba(0,0,0,0.1)",
