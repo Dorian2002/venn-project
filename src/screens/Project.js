@@ -1,7 +1,13 @@
 import { useMemo, useState } from "react";
 import Button from "../components/Button";
-import { View, Text, StyleSheet, TextInput, Dimensions } from "react-native";
-import { Route } from "react-dom";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Dimensions,
+  ScrollView,
+} from "react-native";
 
 import { UpdateProjectLinks } from "../firebase";
 import Avatar from "../components/Avatar";
@@ -74,7 +80,7 @@ function Project({ route, projectId, tags, participants, links }) {
     [data, participants]
   );
   return (
-    <View style={styles.root}>
+    <ScrollView style={styles.root}>
       <Text style={styles.title}>{projectId}</Text>
       <View style={styles.tags}>
         {tags.map((tag) => (
@@ -122,7 +128,7 @@ function Project({ route, projectId, tags, participants, links }) {
       ) : (
         <Button title="Détails" onPress={onNavigateToProject} />
       )}
-    </View>
+    </ScrollView>
   );
 }
 

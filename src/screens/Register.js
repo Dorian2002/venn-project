@@ -9,7 +9,6 @@ import {
 } from "react-native";
 
 import createNewUserId from "../scripts/createNewUserId";
-import { HexColorPicker } from "react-colorful";
 import * as Location from "expo-location";
 import app from "../../app.json";
 import ColorContext from "../ColorContext";
@@ -17,6 +16,7 @@ import Button from "../components/Button";
 import Greetings from "../components/Greetings";
 import { RegisterUser } from "../firebase";
 import { GeoPoint } from "firebase/firestore";
+import { ColorPicker } from "react-native-color-picker";
 
 function Register({ navigation }) {
   const [, setColor] = useContext(ColorContext);
@@ -26,9 +26,14 @@ function Register({ navigation }) {
   const [member, setMember] = useState(null);
   const [errorN, setErrorN] = useState(false);
   const [errorP, setErrorP] = useState(false);
+  const [errorC, setErrorC] = useState(false);
 
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+
+  if (favoritecolor == null) {
+    setColor("red");
+  }
 
   useEffect(() => {
     (async () => {
@@ -76,6 +81,11 @@ function Register({ navigation }) {
     } else if (firstname === "") {
       setErrorP(true);
       setErrorMsg("Votre prénom ne peut pas être vide.");
+    } else if (favoritecolor === "") {
+      setErrorC(true);
+      setErrorMsg(
+        "Vous devez sélectionner une couleur en cliquant sur le rond de couleur au centre de l'écran."
+      );
     } else {
       RegisterUser(
         createNewUserId(firstname, lastname),
@@ -89,7 +99,7 @@ function Register({ navigation }) {
       });
     }
   };
-  const header = (
+  const Header = (
     <View style={styles.header}>
       <Text style={styles.title}>{app.expo.name}</Text>
       <Image source={require("../../assets/icon.png")} style={styles.logo} />
@@ -98,7 +108,7 @@ function Register({ navigation }) {
   if (member) {
     return (
       <View style={styles.root}>
-        {header}
+        {Header}
         <View style={styles.content}>
           <Greetings {...member} />
           <View style={styles.actions}>
@@ -110,7 +120,7 @@ function Register({ navigation }) {
   }
   return (
     <View style={styles.root}>
-      {header}
+      {Header}
       <View style={styles.content}>
         <TextInput
           placeholder="Nom"
@@ -125,7 +135,21 @@ function Register({ navigation }) {
           onChangeText={onChangeFname}
         />
         <Text style={styles.error}>{errorMsg ? errorMsg : null}</Text>
-        <HexColorPicker favoritecolor={favoritecolor} onChange={setFcolor} />
+        <View>
+          <ColorPicker
+            onColorChange={() => {
+              setErrorMsg("");
+              setErrorC(false);
+            }}
+            defaultColor="red"
+            onColorSelected={(color) => {
+              setFcolor(color);
+              setErrorMsg("");
+              setErrorC(false);
+            }}
+            style={styles.colorpicker}
+          />
+        </View>
         <View style={styles.actions}>
           <Button title="S'enregistrer" onPress={onPress} />
         </View>
@@ -163,6 +187,10 @@ const createStyles = ({ error, errorP, errorN, member }) =>
       height: error || member ? 32 : 192,
       width: error || member ? 32 : 192,
       marginLeft: error || member ? 8 : 0,
+    },
+    colorpicker: {
+      height: Dimensions.get("window").width - 200,
+      width: Dimensions.get("window").width,
     },
     inputN: {
       borderColor: errorN ? "red" : "black",
